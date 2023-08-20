@@ -1,0 +1,40 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    docker.build("yashagr91/django-ecommerce:latest", "-f django-ecommerce/")
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
+                        docker.image("yashagr91/django-ecommerce:latest").push()
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to Azure') {
+            steps {
+                ansiblePlaybook(
+                    credentialsId: 'ansible-credentials',
+                    inventory: 'azure_rm.py',
+                    playbook: 'deploy.yaml',
+                    colorized: true
+                )
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline finished'
+        }
+    }
+}

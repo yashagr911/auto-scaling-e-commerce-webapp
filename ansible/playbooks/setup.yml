@@ -1,0 +1,39 @@
+---
+- name: Setup Azure VMs and Install Docker
+  hosts: ansible-server  
+
+  tasks:
+    - name: Update package cache and install required packages
+      become: true
+      apt:
+        update_cache: yes
+        name: "{{ item }}"
+      loop:
+        - python3-pip
+        - python3-apt
+        - software-properties-common
+
+    - name: Add Docker repository GPG key
+      become: true
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker APT repository
+      become: true
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu stable
+        state: present
+
+    - name: Install Docker
+      become: true
+      apt:
+        name: docker-ce
+        state: present
+
+    - name: Start and enable Docker service
+      become: true
+      systemd:
+        name: docker
+        enabled: yes
+        state: started

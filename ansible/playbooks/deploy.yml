@@ -1,0 +1,19 @@
+---
+- name: Deploy Django App with Docker
+  hosts: workers-ansible-server
+
+  tasks:
+    - name: Pull Docker image
+      become: true
+      docker_image:
+        name:  yashagr91/django-ecommerce:latest
+        source: pull
+
+    - name: Run Django container
+      become: true
+      docker_container:
+        name: django-app
+        image:  yashagr91/django-ecommerce:latest
+        ports:
+          - "8000:8000" 
+        detach: yes
