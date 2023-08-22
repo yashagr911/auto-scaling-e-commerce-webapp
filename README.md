@@ -1,4 +1,4 @@
-# E-commerce Web Application Deployment Project
+# Auto-scaling E-commerce Web Application
 
 This repository contains the code and configuration for an automated infrastructure provisioning system that scales a Django-based e-commerce web application using Azure, Ansible, Docker, Jenkins, and Git.
 
